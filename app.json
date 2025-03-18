@@ -13,7 +13,8 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.knoldussoftware.ems"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,6 +32,7 @@
         "projectId": "28fcaf2b-d4f0-4a05-a5ba-5eda83cbd680"
       }
     },
-    "owner": "knoldussoftware"
+    "owner": "knoldussoftware",
+    "plugins": ["expo-secure-store"]
   }
 }

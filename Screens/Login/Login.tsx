@@ -15,9 +15,10 @@ const LoginPage = ({ navigation }) => {
   const { login } = useAuth();
 
   const handleLogin = async () => {
-    if (!email) {
+    const trimmedEmail = email.trim()
+    if (!trimmedEmail) {
       setEmailError('Email field cannot be empty');
-    } else if (!validateEmail(email)) {
+    } else if (!validateEmail(trimmedEmail)) {
       setEmailError('Please enter a valid email address');
     } else {
       setEmailError('');
@@ -31,9 +32,9 @@ const LoginPage = ({ navigation }) => {
       setPasswordError('');
     }
 
-    if (email && password && validateEmail(email) && password.length >= 3) {
+    if (trimmedEmail && password && validateEmail(trimmedEmail) && password.length >= 3) {
       try {
-        await login(email, password);
+        await login(trimmedEmail, password);
 
         const loggedInUser = await AsyncStorage.getItem('loggedIn'); // Fetch from AsyncStorage
         console.log(loggedInUser, "hello");
@@ -63,7 +64,7 @@ const LoginPage = ({ navigation }) => {
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return emailRegex.test(email.trim());
   };
 
   const isDisabled = !email || password.length < 3 || !validateEmail(email);

@@ -6,7 +6,11 @@ node_modules/
 # Expo
 .expo/
 dist/
+
+#builds
 web-build/
+android
+ios
 
 # Native
 *.orig.*

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "EventX",
-    "slug": "eventX",
+    "slug": "ems",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -11,17 +11,18 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.knoldussoftware.ems"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.knoldussoftware.ems",
+      "permissions": ["DETECT_SCREEN_CAPTURE"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -31,6 +32,7 @@
         "projectId": "28fcaf2b-d4f0-4a05-a5ba-5eda83cbd680"
       }
     },
-    "owner": "knoldussoftware"
+    "owner": "knoldussoftware",
+    "plugins": ["expo-secure-store"]
   }
 }

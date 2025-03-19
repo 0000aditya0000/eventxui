@@ -16,7 +16,7 @@ Follow the steps below to set up and run the project:
    ```
 2. Navigate to the project directory:
    ```sh
-   cd frontend-competency-ems
+   cd eventxui
    ```
 3. Install dependencies:
    ```sh
@@ -27,20 +27,21 @@ Follow the steps below to set up and run the project:
    npm install --global eas-cli
    ```
 5. Get access to the Nastech EAS.
-6. Login to EAS:
+6. add env variables
+7. Login to EAS:
    ```sh
    eas login
    ```
-7. Set up Android environment variables (for macOS/Linux users):
+8. Set up Android environment variables (for macOS/Linux users):
    ```sh
    export ANDROID_HOME=$HOME/Android/Sdk
    export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH
    ```
-8. Start the development server:
+9. Start the development server:
    ```sh
    npm run start
    ```
-9. Once the server starts, press `a` to open the app in the emulator.
+10. Once the server starts, press `a` to open the app in the emulator.
 
 ### Notes
 - Ensure your Android emulator is running before launching the app.

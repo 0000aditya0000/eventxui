@@ -14,11 +14,11 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
-import * as SecureStore from "expo-secure-store";
 import { createEvent, getGenre } from "../../Services/Events/eventService";
 import { useAuth } from "../../Context/AuthContext";
 import { Picker } from "@react-native-picker/picker";
 import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function AddEvent({ navigation }) {
   const [isChecked, setIsChecked] = useState(true);
@@ -127,7 +127,10 @@ function AddEvent({ navigation }) {
         type: "image/jpeg",
         name: "upload.jpg",
       } as any);
-      formData.append("upload_preset", `${process.env.EXPO_PUBLIC_IMAGE_PRESET}`);
+      formData.append(
+        "upload_preset",
+        `${process.env.EXPO_PUBLIC_IMAGE_PRESET}`
+      );
 
       const response = await fetch(
         `https://api.cloudinary.com/v1_1/${process.env.EXPO_PUBLIC_IMAGE_CLOUD}/image/upload`,
@@ -145,10 +148,12 @@ function AddEvent({ navigation }) {
   };
 
   const handleSubmit = async () => {
-    const loggedInUser = await SecureStore.getItemAsync("loggedIn");
+    const loggedInUser = await AsyncStorage.getItem("loggedIn");
     await uploadImage();
+
     const parsedUser = JSON.parse(loggedInUser);
-    const userId = parsedUser.id;
+
+    const userId = parsedUser?.id;
     const data = {
       user_id: userId,
       event_name: title,
@@ -180,20 +185,28 @@ function AddEvent({ navigation }) {
       try {
         const response = await createEvent(data, token);
 
-        setTitle("");
-        setLocation("");
-        setDescription("");
-        setStartDate("");
-        setEndDate("");
-        setFees("");
-        setGenre("");
-        setEventPhoto(null);
-        Toast.show({
-          text1: "Success",
-          text2: "Event Added Successfully",
-          type: "success",
-        });
-        navigation.navigate("HomePage");
+        if (response.statusCode === 200) {
+          setTitle("");
+          setLocation("");
+          setDescription("");
+          setStartDate("");
+          setEndDate("");
+          setFees("");
+          setGenre("");
+          setEventPhoto(null);
+          Toast.show({
+            text1: "Success",
+            text2: "Event Added Successfully",
+            type: "success",
+          });
+          navigation.navigate("HomePage");
+        } else {
+          Toast.show({
+            text1: "Error",
+            text2: "Something went wrong!!!",
+            type: "error",
+          });
+        }
       } catch (error) {
         Toast.show({
           text1: "Error",

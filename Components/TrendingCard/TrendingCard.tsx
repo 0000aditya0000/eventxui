@@ -65,7 +65,7 @@ function TrendingCard({ navigation }) {
     const EventPress = () => {
       navigation.navigate("ViewEvent", { eventData: item });
     };
-console.log(item.image)
+
     return (
       <View style={styles.cardContainer}>
         <View style={styles.card} key={index}>

@@ -1,62 +1,74 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import Animated, { FadeInUp } from 'react-native-reanimated';
-import { useAuth } from '../../Context/AuthContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-toast-message';
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
+import { useAuth } from "../../Context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
 
 const LoginPage = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const { login } = useAuth();
 
   const handleLogin = async () => {
-    const trimmedEmail = email.trim()
+    const trimmedEmail = email.trim();
     if (!trimmedEmail) {
-      setEmailError('Email field cannot be empty');
+      setEmailError("Email field cannot be empty");
     } else if (!validateEmail(trimmedEmail)) {
-      setEmailError('Please enter a valid email address');
+      setEmailError("Please enter a valid email address");
     } else {
-      setEmailError('');
+      setEmailError("");
     }
 
     if (!password) {
-      setPasswordError('Password field cannot be empty');
+      setPasswordError("Password field cannot be empty");
     } else if (password.length < 3) {
-      setPasswordError('Password must be at least 3 characters long');
+      setPasswordError("Password must be at least 3 characters long");
     } else {
-      setPasswordError('');
+      setPasswordError("");
     }
 
-    if (trimmedEmail && password && validateEmail(trimmedEmail) && password.length >= 3) {
+    if (
+      trimmedEmail &&
+      password &&
+      validateEmail(trimmedEmail) &&
+      password.length >= 3
+    ) {
       try {
-        await login(trimmedEmail, password);
+        const res = await login(trimmedEmail, password);
 
-        const loggedInUser = await AsyncStorage.getItem('loggedIn'); // Fetch from AsyncStorage
+        const loggedInUser = await AsyncStorage.getItem("loggedIn"); // Fetch from AsyncStorage
         console.log(loggedInUser, "hello");
 
         if (loggedInUser) {
-          navigation.navigate('HomePage');
+          navigation.navigate("HomePage");
           Toast.show({
             text1: "Success",
             text2: "Login successful",
-            type: 'success',
+            type: "success",
           });
 
-          setEmail('');
-          setPassword('');
+          setEmail("");
+          setPassword("");
         }
       } catch (error) {
         console.error("Login error:", error);
-        
+
         Toast.show({
           text1: "Login Error",
           text2: error.message || "Something went wrong",
-          type: 'error',
+          type: "error",
         });
       }
     }
@@ -71,10 +83,10 @@ const LoginPage = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar style='light' />
+      <StatusBar style="light" />
       <Image
-        source={require('../../assets/loginbg.png')}
-        style={{ flex: 1, position: 'absolute', width: '100%', height: '100%' }}
+        source={require("../../assets/loginbg.png")}
+        style={{ flex: 1, position: "absolute", width: "100%", height: "100%" }}
       />
 
       {/* Title and Form */}
@@ -83,7 +95,7 @@ const LoginPage = ({ navigation }) => {
         <View style={styles.logoContainer}>
           <Animated.Image
             entering={FadeInUp.delay(300).duration(3000).springify()}
-            source={require('../../assets/eventx-logo.png')}
+            source={require("../../assets/eventx-logo.png")}
             style={styles.logo}
           />
         </View>
@@ -96,34 +108,41 @@ const LoginPage = ({ navigation }) => {
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <TextInput
-              placeholder='Email'
-              placeholderTextColor={'gray'}
+              placeholder="Email"
+              placeholderTextColor={"gray"}
               onChangeText={(text) => {
                 setEmail(text);
-                setEmailError('');
+                setEmailError("");
               }}
               value={email}
             />
           </View>
-          {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+          {emailError ? (
+            <Text style={styles.errorText}>{emailError}</Text>
+          ) : null}
 
           <View style={styles.inputContainer}>
             <TextInput
-              placeholder='Password'
-              placeholderTextColor={'gray'}
+              placeholder="Password"
+              placeholderTextColor={"gray"}
               onChangeText={(text) => {
                 setPassword(text);
-                setPasswordError('');
+                setPasswordError("");
               }}
               value={password}
               secureTextEntry
             />
           </View>
-          {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+          {passwordError ? (
+            <Text style={styles.errorText}>{passwordError}</Text>
+          ) : null}
 
-          <View style={{ width: '100%', marginBottom: 10 }}>
+          <View style={{ width: "100%", marginBottom: 10 }}>
             <TouchableOpacity
-              style={[styles.button, { backgroundColor: isDisabled ? 'gray' : '#d6001c' }]}
+              style={[
+                styles.button,
+                { backgroundColor: isDisabled ? "gray" : "#d6001c" },
+              ]}
               onPress={handleLogin}
               disabled={isDisabled}
             >
@@ -133,7 +152,7 @@ const LoginPage = ({ navigation }) => {
 
           <View style={styles.signupContainer}>
             <Text>Don't have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+            <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
               <Text style={styles.signupText}>Sign up</Text>
             </TouchableOpacity>
           </View>
@@ -146,75 +165,75 @@ const LoginPage = ({ navigation }) => {
 // Styles
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#fff',
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#fff",
   },
   innerContainer: {
-    display: 'flex',
-    width: '100%',
-    height: '100%',
-    justifyContent: 'space-around',
+    display: "flex",
+    width: "100%",
+    height: "100%",
+    justifyContent: "space-around",
     paddingTop: 40,
     paddingBottom: 10,
   },
   logoContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    position: 'absolute',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+    position: "absolute",
   },
   logo: {
-    tintColor: '#fff',
+    tintColor: "#fff",
     height: 50,
     width: 150,
   },
   titleContainer: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     paddingTop: 40,
   },
   title: {
     fontSize: 35,
-    color: '#fff',
-    fontWeight: '700',
+    color: "#fff",
+    fontWeight: "700",
   },
   formContainer: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     marginHorizontal: 10,
     gap: 15,
   },
   inputContainer: {
-    backgroundColor: 'rgb(245 245 244)',
+    backgroundColor: "rgb(245 245 244)",
     padding: 12,
     borderRadius: 15,
-    width: '100%',
+    width: "100%",
   },
   errorText: {
-    color: 'red',
+    color: "red",
   },
   button: {
-    width: '100%',
+    width: "100%",
     padding: 12,
     borderRadius: 15,
   },
   buttonText: {
-    fontWeight: '700',
-    color: '#ffffff',
-    textAlign: 'center',
+    fontWeight: "700",
+    color: "#ffffff",
+    textAlign: "center",
     fontSize: 18,
   },
   signupContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
   },
   signupText: {
     marginLeft: 5,
-    color: '#d6001c',
-    fontWeight: '600',
+    color: "#d6001c",
+    fontWeight: "600",
   },
 });
 

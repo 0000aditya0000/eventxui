@@ -38,17 +38,20 @@ function AddEvent({ navigation }) {
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [base64Image, setBase64Image] = useState(null);
   const { token } = useAuth();
+  const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
     const getEventType = async () => {
       try {
         const getType = await getGenre(token);
-        setGenreOptions(getType.map(genre => ({ label: genre, value: genre }))); 
+        setGenreOptions(
+          getType.map((genre) => ({ label: genre, value: genre }))
+        );
       } catch (error) {
         Toast.show({
-          text1:"Error",
+          text1: "Error",
           text2: error.message,
-          type: 'error',
+          type: "error",
         });
       }
     };
@@ -116,8 +119,34 @@ function AddEvent({ navigation }) {
     }
   };
 
+  const uploadImage = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("file", {
+        uri: eventPhoto,
+        type: "image/jpeg",
+        name: "upload.jpg",
+      } as any);
+      formData.append("upload_preset", `${process.env.EXPO_PUBLIC_IMAGE_PRESET}`);
+
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.EXPO_PUBLIC_IMAGE_CLOUD}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+      setImageUrl(data.secure_url);
+    } catch (error) {
+      console.error("Upload error:", error);
+    }
+  };
+
   const handleSubmit = async () => {
     const loggedInUser = await SecureStore.getItemAsync("loggedIn");
+    await uploadImage();
     const parsedUser = JSON.parse(loggedInUser);
     const userId = parsedUser.id;
     const data = {
@@ -130,13 +159,21 @@ function AddEvent({ navigation }) {
       registration_fee: fees,
       trending: trending,
       event_type: genre,
-      image: base64Image,
+      image: imageUrl,
     };
-    if (!title || !location || !description || !startDate || !endDate || !fees || !genre) {
+    if (
+      !title ||
+      !location ||
+      !description ||
+      !startDate ||
+      !endDate ||
+      !fees ||
+      !genre
+    ) {
       Toast.show({
-        text1:"Error",
+        text1: "Error",
         text2: "Please fill in all fields",
-        type: 'error',
+        type: "error",
       });
       return;
     } else {
@@ -152,23 +189,29 @@ function AddEvent({ navigation }) {
         setGenre("");
         setEventPhoto(null);
         Toast.show({
-          text1:"Success",
+          text1: "Success",
           text2: "Event Added Successfully",
-          type: 'success',
+          type: "success",
         });
         navigation.navigate("HomePage");
       } catch (error) {
         Toast.show({
-          text1:"Error",
+          text1: "Error",
           text2: error.message,
-          type: 'error',
+          type: "error",
         });
       }
     }
   };
 
   const isDisabled =
-    !title || !startDate || !endDate || !location || !description || !fees || !genre;
+    !title ||
+    !startDate ||
+    !endDate ||
+    !location ||
+    !description ||
+    !fees ||
+    !genre;
 
   return (
     <View style={{ flex: 1 }}>
@@ -269,26 +312,26 @@ function AddEvent({ navigation }) {
         <View style={styles.inputContainer}>
           <Text style={styles.labelText}>Genre</Text>
           <View style={styles.picker}>
-          <Picker
-            selectedValue={genre}
-            mode={"dropdown"}
-            onValueChange={(itemValue) => setGenre(itemValue)}
-          >
-            <Picker.Item
-              value=""
-              label="Select Genre"
-              enabled={false}
-              style={styles.pickerItem}
-              />
-            {genreOptions.map((genreOption) => (
+            <Picker
+              selectedValue={genre}
+              mode={"dropdown"}
+              onValueChange={(itemValue) => setGenre(itemValue)}
+            >
               <Picker.Item
-                key={genreOption.value}
-                label={genreOption.label}
-                value={genreOption.value}
+                value=""
+                label="Select Genre"
+                enabled={false}
                 style={styles.pickerItem}
               />
-            ))}
-          </Picker>
+              {genreOptions.map((genreOption) => (
+                <Picker.Item
+                  key={genreOption.value}
+                  label={genreOption.label}
+                  value={genreOption.value}
+                  style={styles.pickerItem}
+                />
+              ))}
+            </Picker>
           </View>
         </View>
 
@@ -360,10 +403,10 @@ const styles = StyleSheet.create({
   avatarContainer: {
     alignItems: "center",
     marginBottom: 20,
-    alignSelf:'center',
-    borderColor:"grey",
-    borderWidth: 0.5, 
-    borderRadius:20  
+    alignSelf: "center",
+    borderColor: "grey",
+    borderWidth: 0.5,
+    borderRadius: 20,
   },
   avatarButton: {
     width: 350,
@@ -439,14 +482,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 18,
   },
-  picker:{
+  picker: {
     width: "100%",
-    backgroundColor:'#f0f0f0',
+    backgroundColor: "#f0f0f0",
     borderRadius: 15,
   },
-  pickerItem:{
-    fontSize: 14
-  }
+  pickerItem: {
+    fontSize: 14,
+  },
 });
 
 export default AddEvent;

@@ -74,12 +74,32 @@ const LoginPage = ({ navigation }) => {
     }
   };
 
-  const validateEmail = (email) => {
+  const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email.trim());
+    if (!email.trim().length) {
+      setEmailError("Email field cannot be empty");
+      return false;
+    } else if (!emailRegex.test(email.trim())) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    }
+    setEmailError("");
+    return true;
   };
 
-  const isDisabled = !email || password.length < 3 || !validateEmail(email);
+  const validatePassword = (password: string) => {
+    if (!password.trim().length) {
+      setPasswordError("Password field cannot be empty");
+      return false;
+    } else if (password.length < 3) {
+      setPasswordError("Password must be at least 3 characters long");
+      return false;
+    }
+    setPasswordError("");
+    return true;
+  };
+
+  const isDisabled = !email.trim().length || password.length < 3 || !!emailError.length || !!passwordError.length;
 
   return (
     <View style={styles.container}>
@@ -112,7 +132,7 @@ const LoginPage = ({ navigation }) => {
               placeholderTextColor={"gray"}
               onChangeText={(text) => {
                 setEmail(text);
-                setEmailError("");
+                validateEmail(text);
               }}
               value={email}
             />
@@ -127,7 +147,7 @@ const LoginPage = ({ navigation }) => {
               placeholderTextColor={"gray"}
               onChangeText={(text) => {
                 setPassword(text);
-                setPasswordError("");
+                validatePassword(text);
               }}
               value={password}
               secureTextEntry

@@ -13,6 +13,7 @@ import Animated, { FadeInUp } from "react-native-reanimated";
 import { useAuth } from "../../Context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
+import { Ionicons } from "@expo/vector-icons";
 
 const LoginPage = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -20,6 +21,7 @@ const LoginPage = ({ navigation }) => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [loading, setLoading] = useState(false); // Loading state
+  const [secureText, setSecureText] = useState(true);
 
   const { login } = useAuth();
 
@@ -77,12 +79,36 @@ const LoginPage = ({ navigation }) => {
     setLoading(false); // Hide loader
   };
 
-  const validateEmail = (email) => {
+  const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email.trim());
+    if (!email.trim().length) {
+      setEmailError("Email field cannot be empty");
+      return false;
+    } else if (!emailRegex.test(email.trim())) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    }
+    setEmailError("");
+    return true;
   };
 
-  const isDisabled = !email || password.length < 3 || !validateEmail(email) || loading;
+  const validatePassword = (password: string) => {
+    if (!password.trim().length) {
+      setPasswordError("Password field cannot be empty");
+      return false;
+    } else if (password.length < 3) {
+      setPasswordError("Password must be at least 3 characters long");
+      return false;
+    }
+    setPasswordError("");
+    return true;
+  };
+
+  const isDisabled =
+    !email.trim().length ||
+    password.length < 3 ||
+    !!emailError.length ||
+    !!passwordError.length;
 
   return (
     <View style={styles.container}>
@@ -112,24 +138,32 @@ const LoginPage = ({ navigation }) => {
               placeholderTextColor={"gray"}
               onChangeText={(text) => {
                 setEmail(text);
-                setEmailError("");
+                validateEmail(text);
               }}
               value={email}
             />
           </View>
           {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
-          <View style={styles.inputContainer}>
+          <View style={styles.passwordContainer}>
             <TextInput
               placeholder="Password"
-              placeholderTextColor={"gray"}
+              placeholderTextColor="gray"
               onChangeText={(text) => {
                 setPassword(text);
-                setPasswordError("");
+                validatePassword(text);
               }}
               value={password}
-              secureTextEntry
+              secureTextEntry={secureText}
+              style={{ flex: 1 }}
             />
+            <TouchableOpacity onPress={() => setSecureText(!secureText)}>
+              <Ionicons
+                name={secureText ? "eye-off" : "eye"}
+                size={24}
+                color="gray"
+              />
+            </TouchableOpacity>
           </View>
           {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
@@ -210,6 +244,14 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 15,
     width: "100%",
+  },
+  passwordContainer: {
+    backgroundColor: "rgb(245 245 244)",
+    padding: 12,
+    borderRadius: 15,
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
   },
   errorText: {
     color: "red",

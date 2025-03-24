@@ -13,6 +13,7 @@ import {
 import Animated, { FadeInUp } from "react-native-reanimated";
 import { signup } from "../../Services/Auth/authService";
 import Toast from "react-native-toast-message";
+import { Ionicons } from "@expo/vector-icons";
 
 type FormValues = {
   name: string;
@@ -46,6 +47,7 @@ const SignupPage = ({ navigation }) => {
     password: "",
     age: "",
   });
+  const [secureText, setSecureText] = useState(true);
 
   const validate = (field: string, value: string) => {
     let error = "";
@@ -188,15 +190,22 @@ const SignupPage = ({ navigation }) => {
             {errors.age ? (
               <Text style={styles.errorText}>{errors.age}</Text>
             ) : null}
-            <View style={styles.inputContainer}>
+            <View style={styles.passwordContainer}>
               <TextInput
                 placeholder="Password"
                 placeholderTextColor={"gray"}
                 onChangeText={(text) => handleChange("password", text)}
                 value={values.password}
-                secureTextEntry
-                style={styles.input}
+                secureTextEntry={secureText}
+                style={{ flex: 1 }}
               />
+              <TouchableOpacity onPress={() => setSecureText(!secureText)}>
+                <Ionicons
+                  name={secureText ? "eye-off" : "eye"}
+                  size={24}
+                  color="gray"
+                />
+              </TouchableOpacity>
             </View>
             {errors.password ? (
               <Text style={styles.errorText}>{errors.password}</Text>
@@ -305,6 +314,14 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     textAlign: "center",
     fontSize: 18,
+  },
+  passwordContainer: {
+    backgroundColor: "rgb(245 245 244)",
+    padding: 12,
+    borderRadius: 15,
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
   },
 });
 

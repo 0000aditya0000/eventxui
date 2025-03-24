@@ -7,6 +7,7 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
 import { useAuth } from "../../Context/AuthContext";
@@ -19,11 +20,13 @@ const LoginPage = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state
   const [secureText, setSecureText] = useState(true);
 
   const { login } = useAuth();
 
   const handleLogin = async () => {
+    setLoading(true); // Show loader
     const trimmedEmail = email.trim();
     if (!trimmedEmail) {
       setEmailError("Email field cannot be empty");
@@ -49,9 +52,7 @@ const LoginPage = ({ navigation }) => {
     ) {
       try {
         const res = await login(trimmedEmail, password);
-
-        const loggedInUser = await AsyncStorage.getItem("loggedIn"); // Fetch from AsyncStorage
-        console.log(loggedInUser, "hello");
+        const loggedInUser = await AsyncStorage.getItem("loggedIn");
 
         if (loggedInUser) {
           navigation.navigate("HomePage");
@@ -74,6 +75,8 @@ const LoginPage = ({ navigation }) => {
         });
       }
     }
+
+    setLoading(false); // Hide loader
   };
 
   const validateEmail = (email: string) => {
@@ -115,9 +118,7 @@ const LoginPage = ({ navigation }) => {
         style={{ flex: 1, position: "absolute", width: "100%", height: "100%" }}
       />
 
-      {/* Title and Form */}
       <View style={styles.innerContainer}>
-        {/* Title and Logo */}
         <View style={styles.logoContainer}>
           <Animated.Image
             entering={FadeInUp.delay(300).duration(3000).springify()}
@@ -130,7 +131,6 @@ const LoginPage = ({ navigation }) => {
           <Text style={styles.title}>Sign In</Text>
         </View>
 
-        {/* Form */}
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <TextInput
@@ -143,9 +143,7 @@ const LoginPage = ({ navigation }) => {
               value={email}
             />
           </View>
-          {emailError ? (
-            <Text style={styles.errorText}>{emailError}</Text>
-          ) : null}
+          {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
           <View style={styles.passwordContainer}>
             <TextInput
@@ -167,9 +165,7 @@ const LoginPage = ({ navigation }) => {
               />
             </TouchableOpacity>
           </View>
-          {passwordError ? (
-            <Text style={styles.errorText}>{passwordError}</Text>
-          ) : null}
+          {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
           <View style={{ width: "100%", marginBottom: 10 }}>
             <TouchableOpacity
@@ -180,7 +176,11 @@ const LoginPage = ({ navigation }) => {
               onPress={handleLogin}
               disabled={isDisabled}
             >
-              <Text style={styles.buttonText}>Sign In</Text>
+              {loading ? (
+                <ActivityIndicator color="#ffffff" />
+              ) : (
+                <Text style={styles.buttonText}>Sign In</Text>
+              )}
             </TouchableOpacity>
           </View>
 
@@ -260,6 +260,7 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 12,
     borderRadius: 15,
+    alignItems: "center",
   },
   buttonText: {
     fontWeight: "700",

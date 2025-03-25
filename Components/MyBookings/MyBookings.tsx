@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -28,7 +28,7 @@ function MyBookings({ navigation, route }) {
     setError(null);
     try {
       const data = await getBookedEventList(user.id, token);
-      const trendingEvents = data.event.map((event) => {
+      const trendingEvents = data?.event?.map((event) => {
         const startDate = new Date(event.event_start_date);
         const userId = user.id;
         const endDate = new Date(event.event_end_date);
@@ -127,7 +127,7 @@ function MyBookings({ navigation, route }) {
               style={{ paddingVertical: 4 }}
             />
             <Text style={styles.listHeader}>{route.name}</Text>
-            <Text style={styles.listTotal}>({events.length})</Text>
+            <Text style={styles.listTotal}>({events?.length || 0})</Text>
           </View>
         )}
         ListFooterComponent={<Footer />}

@@ -1,28 +1,50 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Image, Dimensions, FlatList, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState } from "react";
+import { View, Image, Dimensions, FlatList, StyleSheet } from "react-native";
+import { getEventByStatus } from "../../Services/Events/eventService";
+import { useAuth } from "../../Context/AuthContext";
+import Toast from "react-native-toast-message";
 
 function EventBanner() {
+  const { token } = useAuth();
   const bannerRef = useRef<FlatList>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const screenWidth = Dimensions.get('window').width;
-  const bannerData = [
+  const screenWidth = Dimensions.get("window").width;
+  const [bannerData, setBannerData] = useState([
     {
       id: 1,
-      image: require('../../assets/ogBanner.png'),
+      image: require("../../assets/ogBanner.png"),
     },
-    {
-      id: 2,
-      image: require('../../assets/event2.jpg'),
-    },
-    {
-      id: 3,
-      image: require('../../assets/ogBanner.png'),
-    },
-    {
-      id: 4,
-      image: require('../../assets/event1.jpg'),
-    },
-  ];
+  ]);
+
+  const RandomEvents = (events, max: number = 5) => {
+    const shuffled = [...events].sort(() => Math.random() - 0.5);
+    // Return up to max events
+    return shuffled.slice(0, Math.min(events.length, max));
+  };
+
+  const getEventsData = async () => {
+    try {
+      const events = await getEventByStatus("upcoming", token);
+      if (!!events.length) {
+        const requiredData = events.map(({ id, image }) => ({
+          id,
+          image: { uri: image },
+        }));
+        const shuffledEvents = RandomEvents(requiredData);
+        setBannerData(shuffledEvents);
+      }
+    } catch (error) {
+      Toast.show({
+        text1: "Error",
+        text2: error.message,
+        type: "error",
+      });
+    }
+  };
+
+  useEffect(() => {
+    getEventsData();
+  }, []);
 
   //Auto Scroll
 
@@ -66,7 +88,7 @@ function EventBanner() {
 
   const renderDotIndicator = () => {
     return bannerData.map((item, index) => {
-      const indicatorBg = activeIndex === index ? '#d6001c' : '#cccccc';
+      const indicatorBg = activeIndex === index ? "#d6001c" : "#cccccc";
       return (
         <View
           key={index}
@@ -82,7 +104,7 @@ function EventBanner() {
     return (
       <View>
         <Image
-          source={item.image}
+          source={{ uri: item.image.uri }}
           style={{ height: 250, width: screenWidth }}
         />
       </View>
@@ -110,8 +132,8 @@ function EventBanner() {
 const styles = StyleSheet.create({
   indicatorContainer: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
   },
   indicator: {
     height: 10,

@@ -113,11 +113,12 @@ function MyBookings({ navigation, route }) {
   }
 
   return (
-    <View>
+    <View style={styles.container}>
       <FlatList
         data={events}
         renderItem={renderBanner}
         keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.listContent}
         ListHeaderComponent={() => (
           <View style={styles.listHeaderContainer}>
             <MaterialCommunityIcons
@@ -130,13 +131,30 @@ function MyBookings({ navigation, route }) {
             <Text style={styles.listTotal}>({events?.length || 0})</Text>
           </View>
         )}
-        ListFooterComponent={<Footer />}
+        // ListFooterComponent={<Footer />}
       />
+      <View style={styles.footerContainer}>
+        <Footer />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+  },
+  listContent: {
+    flexGrow: 1,
+    paddingBottom: 180,
+  },
+  footerContainer: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    backgroundColor: "#ffffff",
+  },
   cardContainer: {
     paddingHorizontal: 15,
     paddingVertical: 10,

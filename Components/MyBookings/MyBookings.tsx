@@ -131,7 +131,6 @@ function MyBookings({ navigation, route }) {
             <Text style={styles.listTotal}>({events?.length || 0})</Text>
           </View>
         )}
-        // ListFooterComponent={<Footer />}
       />
       <View style={styles.footerContainer}>
         <Footer />

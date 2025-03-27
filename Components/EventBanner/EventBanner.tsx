@@ -19,7 +19,7 @@ function EventBanner() {
   const RandomEvents = (events, max: number = 5) => {
     const shuffled = [...events].sort(() => Math.random() - 0.5);
     // Return up to max events
-    return shuffled.slice(0, Math.min(events.length, max));
+    return shuffled.slice(0, Math.min(events.length, Math.max(0, max)));
   };
 
   const getEventsData = async () => {

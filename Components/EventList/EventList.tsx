@@ -116,6 +116,7 @@ function EventList({ navigation, route }) {
         renderItem={renderBanner}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
+        ListFooterComponent={<Footer />}
         ListHeaderComponent={() => (
           <View style={styles.listHeaderContainer}>
             {route.name === "Upcoming Events" ? (
@@ -138,9 +139,6 @@ function EventList({ navigation, route }) {
           </View>
         )}
       />
-      <View style={styles.footerContainer}>
-        <Footer />
-      </View>
     </View>
   );
 }
@@ -152,13 +150,6 @@ const styles = StyleSheet.create({
   },
   listContent: {
     flexGrow: 1,
-    paddingBottom: 180,
-  },
-  footerContainer: {
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
-    backgroundColor: "#ffffff",
   },
   cardContainer: {
     paddingHorizontal: 15,

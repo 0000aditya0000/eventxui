@@ -10,20 +10,14 @@ import {
   ActivityIndicator,
 } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
-import { useAuth } from "../../Context/AuthContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
-import { Ionicons } from "@expo/vector-icons";
+import { forgotPassword } from "../../Services/Auth/authService";
 
-const LoginPage = ({ navigation }) => {
+const ForgetPasswordPage = ({ navigation }) => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
   const [loading, setLoading] = useState(false); // Loading state
   const [secureText, setSecureText] = useState(true);
-
-  const { login } = useAuth();
 
   const handleLogin = async () => {
     setLoading(true); // Show loader
@@ -36,40 +30,26 @@ const LoginPage = ({ navigation }) => {
       setEmailError("");
     }
 
-    if (!password) {
-      setPasswordError("Password field cannot be empty");
-    } else if (password.length < 3) {
-      setPasswordError("Password must be at least 3 characters long");
-    } else {
-      setPasswordError("");
-    }
-
-    if (
-      trimmedEmail &&
-      password &&
-      validateEmail(trimmedEmail) &&
-      password.length >= 3
-    ) {
+    if (trimmedEmail && validateEmail(trimmedEmail)) {
       try {
-        const res = await login(trimmedEmail, password);
-        const loggedInUser = await AsyncStorage.getItem("loggedIn");
+        const res = await forgotPassword(trimmedEmail);
+        console.log(res);
 
-        if (loggedInUser) {
-          navigation.navigate("HomePage");
+        if (res.message === "Reset password email sent") {
           Toast.show({
             text1: "Success",
-            text2: "Login successful",
+            text2: "Email sent successful",
             type: "success",
           });
 
           setEmail("");
-          setPassword("");
+          navigation.navigate("ResetPassword");
         }
       } catch (error) {
-        console.error("Login error:", error);
+        console.error("Error:", error);
 
         Toast.show({
-          text1: "Login Error",
+          text1: "Error",
           text2: error.message || "Something went wrong",
           type: "error",
         });
@@ -92,23 +72,7 @@ const LoginPage = ({ navigation }) => {
     return true;
   };
 
-  const validatePassword = (password: string) => {
-    if (!password.trim().length) {
-      setPasswordError("Password field cannot be empty");
-      return false;
-    } else if (password.length < 3) {
-      setPasswordError("Password must be at least 3 characters long");
-      return false;
-    }
-    setPasswordError("");
-    return true;
-  };
-
-  const isDisabled =
-    !email.trim().length ||
-    password.length < 3 ||
-    !!emailError.length ||
-    !!passwordError.length;
+  const isDisabled = !email.trim().length || !!emailError.length;
 
   return (
     <View style={styles.container}>
@@ -128,13 +92,13 @@ const LoginPage = ({ navigation }) => {
         </View>
 
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>Sign In</Text>
+          <Text style={styles.title}>Forgot Password</Text>
         </View>
 
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <TextInput
-              placeholder="Email"
+              placeholder="Registered Email"
               placeholderTextColor={"gray"}
               onChangeText={(text) => {
                 setEmail(text);
@@ -146,38 +110,6 @@ const LoginPage = ({ navigation }) => {
           {emailError ? (
             <Text style={styles.errorText}>{emailError}</Text>
           ) : null}
-
-          <View style={styles.passwordContainer}>
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor="gray"
-              onChangeText={(text) => {
-                setPassword(text);
-                validatePassword(text);
-              }}
-              value={password}
-              secureTextEntry={secureText}
-              style={{ flex: 1 }}
-            />
-            <TouchableOpacity onPress={() => setSecureText(!secureText)}>
-              <Ionicons
-                name={secureText ? "eye-off" : "eye"}
-                size={24}
-                color="gray"
-              />
-            </TouchableOpacity>
-          </View>
-          {passwordError ? (
-            <Text style={styles.errorText}>{passwordError}</Text>
-          ) : null}
-
-          <View style={styles.forgetPasswordContainer}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("ForgetPassword")}
-            >
-              <Text style={styles.forgetPasswordText}>Forgot Password?</Text>
-            </TouchableOpacity>
-          </View>
 
           <View style={{ width: "100%", marginBottom: 10 }}>
             <TouchableOpacity
@@ -191,7 +123,7 @@ const LoginPage = ({ navigation }) => {
               {loading ? (
                 <ActivityIndicator color="#ffffff" />
               ) : (
-                <Text style={styles.buttonText}>Sign In</Text>
+                <Text style={styles.buttonText}>Send Email</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -257,14 +189,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     width: "100%",
   },
-  passwordContainer: {
-    backgroundColor: "rgb(245 245 244)",
-    padding: 12,
-    borderRadius: 15,
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-  },
   errorText: {
     color: "red",
   },
@@ -290,15 +214,6 @@ const styles = StyleSheet.create({
     color: "#d6001c",
     fontWeight: "600",
   },
-  forgetPasswordContainer: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-  },
-  forgetPasswordText: {
-    color: "gray",
-  },
 });
 
-export default LoginPage;
+export default ForgetPasswordPage;

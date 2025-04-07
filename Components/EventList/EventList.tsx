@@ -122,14 +122,14 @@ function EventList({ navigation, route }) {
               <Ionicons
                 name="calendar-outline"
                 size={25}
-                color="#e25822"
+                color="#000"
                 style={{ paddingVertical: 4 }}
               />
             ) : (
               <Ionicons
                 name="flame-outline"
                 size={25}
-                color="#e25822"
+                color="#000"
                 style={{ paddingVertical: 4 }}
               />
             )}
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   listHeader: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#e25822",
+    color: "#000",
     paddingHorizontal: 5,
   },
   listTotal: {

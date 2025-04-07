@@ -124,7 +124,7 @@ function MyBookings({ navigation, route }) {
             <MaterialCommunityIcons
               name="ticket-confirmation-outline"
               size={25}
-              color="#e25822"
+              color="#000"
               style={{ paddingVertical: 4 }}
             />
             <Text style={styles.listHeader}>{route.name}</Text>
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   listHeader: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#e25822",
+    color: "#000",
     paddingHorizontal: 5,
   },
   listTotal: {

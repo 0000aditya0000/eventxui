@@ -101,6 +101,23 @@ function EventList({ navigation, route }) {
     );
   };
 
+  const NoEvents = () => (
+    <View style={styles.noEventsContainer}>
+      <Ionicons 
+        name="calendar-outline" 
+        size={80} 
+        color="#e25822" 
+        style={styles.noEventsIcon}
+      />
+      <Text style={styles.noEventsTitle}>No Events Found</Text>
+      <Text style={styles.noEventsText}>
+        {route.name === "Trending Events" 
+          ? "There are no trending events at the moment."
+          : "There are no upcoming events scheduled."}
+      </Text>
+    </View>
+  );
+
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -111,33 +128,37 @@ function EventList({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={events}
-        renderItem={renderBanner}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
-        ListHeaderComponent={() => (
-          <View style={styles.listHeaderContainer}>
-            {route.name === "Upcoming Events" ? (
-              <Ionicons
-                name="calendar-outline"
-                size={25}
-                color="#e25822"
-                style={{ paddingVertical: 4 }}
-              />
-            ) : (
-              <Ionicons
-                name="flame-outline"
-                size={25}
-                color="#e25822"
-                style={{ paddingVertical: 4 }}
-              />
-            )}
-            <Text style={styles.listHeader}>All {route.name}</Text>
-            <Text style={styles.listTotal}>({events.length})</Text>
-          </View>
-        )}
-      />
+      {events.length === 0 ? (
+        <NoEvents />
+      ) : (
+        <FlatList
+          data={events}
+          renderItem={renderBanner}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContent}
+          ListHeaderComponent={() => (
+            <View style={styles.listHeaderContainer}>
+              {route.name === "Upcoming Events" ? (
+                <Ionicons
+                  name="calendar-outline"
+                  size={25}
+                  color="#e25822"
+                  style={{ paddingVertical: 4 }}
+                />
+              ) : (
+                <Ionicons
+                  name="flame-outline"
+                  size={25}
+                  color="#e25822"
+                  style={{ paddingVertical: 4 }}
+                />
+              )}
+              <Text style={styles.listHeader}>All {route.name}</Text>
+              <Text style={styles.listTotal}>({events.length})</Text>
+            </View>
+          )}
+        />
+      )}
       <View style={styles.footerContainer}>
         <Footer />
       </View>
@@ -242,11 +263,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     padding: 20,
+    marginBottom: 100,
+  },
+  noEventsIcon: {
+    marginBottom: 20,
+  },
+  noEventsTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#e25822",
+    marginBottom: 10,
   },
   noEventsText: {
     fontSize: 16,
     color: "#45474D",
-    fontWeight: "600",
+    textAlign: "center",
+    lineHeight: 24,
   },
 });
 

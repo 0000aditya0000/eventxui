@@ -143,7 +143,9 @@ const LoginPage = ({ navigation }) => {
               value={email}
             />
           </View>
-          {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+          {emailError ? (
+            <Text style={styles.errorText}>{emailError}</Text>
+          ) : null}
 
           <View style={styles.passwordContainer}>
             <TextInput
@@ -165,7 +167,17 @@ const LoginPage = ({ navigation }) => {
               />
             </TouchableOpacity>
           </View>
-          {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+          {passwordError ? (
+            <Text style={styles.errorText}>{passwordError}</Text>
+          ) : null}
+
+          <View style={styles.forgetPasswordContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("ForgetPassword")}
+            >
+              <Text style={styles.forgetPasswordText}>Forgot Password?</Text>
+            </TouchableOpacity>
+          </View>
 
           <View style={{ width: "100%", marginBottom: 10 }}>
             <TouchableOpacity
@@ -277,6 +289,15 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     color: "#d6001c",
     fontWeight: "600",
+  },
+  forgetPasswordContainer: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  forgetPasswordText: {
+    color: "gray",
   },
 });
 

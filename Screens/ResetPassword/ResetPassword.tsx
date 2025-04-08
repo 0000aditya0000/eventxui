@@ -1,96 +1,36 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
+import { StatusBar } from "expo-status-bar";
 import {
   View,
   Text,
   TextInput,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
   ActivityIndicator,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
 } from "react-native";
+import { useRoute, useNavigation, RouteProp } from "@react-navigation/native";
 import Animated, { FadeInUp } from "react-native-reanimated";
-import { useAuth } from "../../Context/AuthContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { resetPassword } from "../../Services/Auth/authService";
 import Toast from "react-native-toast-message";
-import { Ionicons } from "@expo/vector-icons";
 
-const LoginPage = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [loading, setLoading] = useState(false); // Loading state
+type ResetPasswordRouteParams = {
+  ResetPassword: { token: string };
+};
+
+export default function ResetPasswordScreen() {
+  const route =
+    useRoute<RouteProp<ResetPasswordRouteParams, "ResetPassword">>();
+  const navigation = useNavigation();
+  const [token, setToken] = useState(""); // Extract JWT token from deep link
+
+  const [newPassword, setNewPassword] = useState<string>("");
   const [secureText, setSecureText] = useState(true);
-
-  const { login } = useAuth();
-
-  const handleLogin = async () => {
-    setLoading(true); // Show loader
-    const trimmedEmail = email.trim();
-    if (!trimmedEmail) {
-      setEmailError("Email field cannot be empty");
-    } else if (!validateEmail(trimmedEmail)) {
-      setEmailError("Please enter a valid email address");
-    } else {
-      setEmailError("");
-    }
-
-    if (!password) {
-      setPasswordError("Password field cannot be empty");
-    } else if (password.length < 3) {
-      setPasswordError("Password must be at least 3 characters long");
-    } else {
-      setPasswordError("");
-    }
-
-    if (
-      trimmedEmail &&
-      password &&
-      validateEmail(trimmedEmail) &&
-      password.length >= 3
-    ) {
-      try {
-        const res = await login(trimmedEmail, password);
-        const loggedInUser = await AsyncStorage.getItem("loggedIn");
-
-        if (loggedInUser) {
-          navigation.navigate("HomePage");
-          Toast.show({
-            text1: "Success",
-            text2: "Login successful",
-            type: "success",
-          });
-
-          setEmail("");
-          setPassword("");
-        }
-      } catch (error) {
-        console.error("Login error:", error);
-
-        Toast.show({
-          text1: "Login Error",
-          text2: error.message || "Something went wrong",
-          type: "error",
-        });
-      }
-    }
-
-    setLoading(false); // Hide loader
-  };
-
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email.trim().length) {
-      setEmailError("Email field cannot be empty");
-      return false;
-    } else if (!emailRegex.test(email.trim())) {
-      setEmailError("Please enter a valid email address");
-      return false;
-    }
-    setEmailError("");
-    return true;
-  };
+  const [loading, setLoading] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
   const validatePassword = (password: string) => {
     if (!password.trim().length) {
@@ -104,11 +44,42 @@ const LoginPage = ({ navigation }) => {
     return true;
   };
 
+  const handleResetPassword = async () => {
+    if (!newPassword) {
+      Toast.show({
+        text1: "Error",
+        text2: "Please enter a new password.",
+        type: "error",
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await resetPassword(token, newPassword);
+      Toast.show({
+        text1: "Success",
+        text2: "Password Reset Successful",
+        type: "success",
+      });
+      if (response) {
+        navigation.navigate("Login" as never);
+      }
+    } catch (error) {
+      Toast.show({
+        text1: "Error",
+        text2: error.message,
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const isDisabled =
-    !email.trim().length ||
-    password.length < 3 ||
-    !!emailError.length ||
-    !!passwordError.length;
+    newPassword.length < 3 ||
+    !!passwordError.length ||
+    !!confirmPasswordError.length;
 
   return (
     <View style={styles.container}>
@@ -128,34 +99,29 @@ const LoginPage = ({ navigation }) => {
         </View>
 
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>Sign In</Text>
+          <Text style={styles.title}>Reset Password</Text>
         </View>
 
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <TextInput
-              placeholder="Email"
+              placeholder="Token"
               placeholderTextColor={"gray"}
               onChangeText={(text) => {
-                setEmail(text);
-                validateEmail(text);
+                setToken(text);
               }}
-              value={email}
+              value={token}
             />
           </View>
-          {emailError ? (
-            <Text style={styles.errorText}>{emailError}</Text>
-          ) : null}
-
           <View style={styles.passwordContainer}>
             <TextInput
               placeholder="Password"
               placeholderTextColor="gray"
               onChangeText={(text) => {
-                setPassword(text);
+                setNewPassword(text);
                 validatePassword(text);
               }}
-              value={password}
+              value={newPassword}
               secureTextEntry={secureText}
               style={{ flex: 1 }}
             />
@@ -171,13 +137,24 @@ const LoginPage = ({ navigation }) => {
             <Text style={styles.errorText}>{passwordError}</Text>
           ) : null}
 
-          <View style={styles.forgetPasswordContainer}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("ForgetPassword")}
-            >
-              <Text style={styles.forgetPasswordText}>Forgot Password?</Text>
-            </TouchableOpacity>
+          <View style={styles.inputContainer}>
+            <TextInput
+              placeholder="Confirm Password"
+              placeholderTextColor={"gray"}
+              onChangeText={(text) => {
+                setConfirmPassword(text);
+                if (text !== newPassword) {
+                  setConfirmPasswordError("Confirm password doesn't match");
+                } else {
+                  setConfirmPasswordError("");
+                }
+              }}
+              value={confirmPassword}
+            />
           </View>
+          {confirmPasswordError ? (
+            <Text style={styles.errorText}>{confirmPasswordError}</Text>
+          ) : null}
 
           <View style={{ width: "100%", marginBottom: 10 }}>
             <TouchableOpacity
@@ -185,28 +162,21 @@ const LoginPage = ({ navigation }) => {
                 styles.button,
                 { backgroundColor: isDisabled ? "gray" : "#d6001c" },
               ]}
-              onPress={handleLogin}
+              onPress={handleResetPassword}
               disabled={isDisabled}
             >
               {loading ? (
                 <ActivityIndicator color="#ffffff" />
               ) : (
-                <Text style={styles.buttonText}>Sign In</Text>
+                <Text style={styles.buttonText}>Reset Password</Text>
               )}
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.signupContainer}>
-            <Text>Don't have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
-              <Text style={styles.signupText}>Sign up</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
     </View>
   );
-};
+}
 
 // Styles
 const styles = StyleSheet.create({
@@ -300,5 +270,3 @@ const styles = StyleSheet.create({
     color: "gray",
   },
 });
-
-export default LoginPage;

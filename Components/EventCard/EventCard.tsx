@@ -97,6 +97,21 @@ function EventCard({ navigation }) {
     );
   };
 
+  const NoEvents = () => (
+    <View style={styles.noEventsContainer}>
+      <Ionicons 
+        name="calendar-outline" 
+        size={80} 
+        color="#e25822" 
+        style={styles.noEventsIcon}
+      />
+      <Text style={styles.noEventsTitle}>No Upcoming Events</Text>
+      <Text style={styles.noEventsText}>
+        There are no upcoming events scheduled at the moment. Check back later!
+      </Text>
+    </View>
+  );
+
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -108,9 +123,7 @@ function EventCard({ navigation }) {
   return (
     <View>
       {events.length === 0 ? (
-        <View style={styles.noEventsContainer}>
-          <Text style={styles.noEventsText}>No events found</Text>
-        </View>
+        <NoEvents />
       ) : (
         <FlatList
           data={events}
@@ -185,11 +198,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     padding: 20,
+    marginBottom: 100,
+  },
+  noEventsIcon: {
+    marginBottom: 20,
+  },
+  noEventsTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#e25822",
+    marginBottom: 10,
   },
   noEventsText: {
     fontSize: 16,
     color: "#45474D",
-    fontWeight: "600",
+    textAlign: "center",
+    lineHeight: 24,
   },
 });
 

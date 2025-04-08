@@ -102,6 +102,21 @@ function TrendingCard({ navigation }) {
     );
   };
 
+  const NoTrendingEvents = () => (
+    <View style={styles.noTrendingContainer}>
+      <Ionicons 
+        name="flame-outline" 
+        size={80} 
+        color="#e25822" 
+        style={styles.noTrendingIcon}
+      />
+      <Text style={styles.noTrendingTitle}>No Trending Events</Text>
+      <Text style={styles.noTrendingText}>
+        There are no trending events at the moment. Check back later!
+      </Text>
+    </View>
+  );
+
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -113,9 +128,7 @@ function TrendingCard({ navigation }) {
   return (
     <View>
       {events.length === 0 ? (
-        <View style={styles.noEventsContainer}>
-          <Text style={styles.noEventsText}>No events trending</Text>
-        </View>
+        <NoTrendingEvents />
       ) : (
         <FlatList
           data={events}
@@ -202,17 +215,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
   },
-  noEventsContainer: {
+  noTrendingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
     padding: 20,
+    marginBottom: 100,
   },
-  noEventsText: {
+  noTrendingIcon: {
+    marginBottom: 20,
+  },
+  noTrendingTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#e25822",
+    marginBottom: 10,
+  },
+  noTrendingText: {
     fontSize: 16,
     color: "#45474D",
-    fontWeight: "600",
+    textAlign: "center",
+    lineHeight: 24,
   },
 });
 

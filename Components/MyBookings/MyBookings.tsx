@@ -104,6 +104,21 @@ function MyBookings({ navigation, route }) {
     );
   };
 
+  const NoBookings = () => (
+    <View style={styles.noBookingsContainer}>
+      <Ionicons 
+        name="calendar-outline" 
+        size={80} 
+        color="#e25822" 
+        style={styles.noBookingsIcon}
+      />
+      <Text style={styles.noBookingsTitle}>No Bookings Found</Text>
+      <Text style={styles.noBookingsText}>
+        You haven't booked any events yet. Explore events and book your first one!
+      </Text>
+    </View>
+  );
+
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -114,24 +129,28 @@ function MyBookings({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={events}
-        renderItem={renderBanner}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
-        ListHeaderComponent={() => (
-          <View style={styles.listHeaderContainer}>
-            <MaterialCommunityIcons
-              name="ticket-confirmation-outline"
-              size={25}
-              color="#000"
-              style={{ paddingVertical: 4 }}
-            />
-            <Text style={styles.listHeader}>{route.name}</Text>
-            <Text style={styles.listTotal}>({events?.length || 0})</Text>
-          </View>
-        )}
-      />
+      {events.length === 0 ? (
+        <NoBookings />
+      ) : (
+        <FlatList
+          data={events}
+          renderItem={renderBanner}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContent}
+          ListHeaderComponent={() => (
+            <View style={styles.listHeaderContainer}>
+              <MaterialCommunityIcons
+                name="ticket-confirmation-outline"
+                size={25}
+                color="#e25822"
+                style={{ paddingVertical: 4 }}
+              />
+              <Text style={styles.listHeader}>{route.name}</Text>
+              <Text style={styles.listTotal}>({events?.length || 0})</Text>
+            </View>
+          )}
+        />
+      )}
       <View style={styles.footerContainer}>
         <Footer />
       </View>
@@ -215,7 +234,7 @@ const styles = StyleSheet.create({
   listHeader: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#000",
+    color: "#e25822",
     paddingHorizontal: 5,
   },
   listTotal: {
@@ -230,17 +249,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
   },
-  noEventsContainer: {
+  noBookingsContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
     padding: 20,
+    marginBottom: 100,
   },
-  noEventsText: {
+  noBookingsIcon: {
+    marginBottom: 20,
+  },
+  noBookingsTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#e25822",
+    marginBottom: 10,
+  },
+  noBookingsText: {
     fontSize: 16,
     color: "#45474D",
-    fontWeight: "600",
+    textAlign: "center",
+    lineHeight: 24,
   },
 });
 

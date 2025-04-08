@@ -22,6 +22,8 @@ import Toast from "react-native-toast-message";
 import { toastConfig } from "./ToastConfig";
 import MyBookings from "./Components/MyBookings/MyBookings";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ForgetPassword from "./Screens/ForgetPassword/ForgetPassword";
+import ResetPassword from "./Screens/ResetPassword/ResetPassword";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -98,6 +100,16 @@ const RootStackNavigator = () => {
       <Stack.Screen
         name="MyBookings"
         component={MyBookings}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ForgetPassword"
+        component={ForgetPassword}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ResetPassword"
+        component={ResetPassword}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

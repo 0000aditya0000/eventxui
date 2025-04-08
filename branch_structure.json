@@ -1,0 +1,33 @@
+{
+  "default_branch": "master",
+  "branches": [
+    "enhacement/fallbackscreen",
+    "feat/forget-reset-password",
+    "feature/issue-42-add-loader",
+    "feature/issue-43-add-loader-to-profile",
+    "fix/login-error-handle",
+    "issue-46-event-loader",
+    "master",
+    "origin"
+  ],
+  "parent": {
+    "enhacement/fallbackscreen": "master",
+    "feat/forget-reset-password": "master",
+    "feature/issue-42-add-loader": "master",
+    "feature/issue-43-add-loader-to-profile": "master",
+    "fix/login-error-handle": "master",
+    "issue-46-event-loader": "master",
+    "master": null,
+    "origin": "master"
+  },
+  "order": [
+    "master",
+    "enhacement/fallbackscreen",
+    "feat/forget-reset-password",
+    "feature/issue-42-add-loader",
+    "feature/issue-43-add-loader-to-profile",
+    "fix/login-error-handle",
+    "issue-46-event-loader",
+    "origin"
+  ]
+}

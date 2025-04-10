@@ -66,8 +66,6 @@ const LoginPage = ({ navigation }) => {
           setPassword("");
         }
       } catch (error) {
-        console.error("Login error:", error);
-
         Toast.show({
           text1: "Login Error",
           text2: error.message || "Something went wrong",

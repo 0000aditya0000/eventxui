@@ -27,7 +27,7 @@ const apiService = {
       body: JSON.stringify(data)
     });
     if (!response.ok) {
-      debugger
+      // debugger
       const errorData = await response.json();
       throw new Error( errorData.message );
     }

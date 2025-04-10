@@ -130,7 +130,7 @@ function MyBookings({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      {events?.length === 0 ? (
+      {!events?.length ? (
         <NoBookings />
       ) : (
         <FlatList

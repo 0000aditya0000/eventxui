@@ -1,6 +1,6 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { login as loginService } from '../Services/Auth/authService';
+import React, { createContext, useState, useContext, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { login as loginService } from "../Services/Auth/authService";
 
 const AuthContext = createContext(null);
 
@@ -51,18 +51,13 @@ export const AuthProvider = ({ children }) => {
       console.log(userData);
 
       // Store user data and token
-      await storeData('loggedIn', userData);
+      await storeData("loggedIn", userData);
       console.log("after storage");
 
-      await storeData('token', data.access_token);
+      await storeData("token", data.access_token);
     } catch (error) {
       console.error("Login Error:", error);
-      // Uncomment if you want to show a toast message on error
-      // Toast.show({
-      //   text1: "Login Error",
-      //   text2: error?.message || "Something went wrong",
-      //   type: 'error',
-      // });
+      throw error;
     }
   };
 
@@ -70,15 +65,15 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setUser(null);
     setToken(null);
-    await removeData('loggedIn');
-    await removeData('token');
+    await removeData("loggedIn");
+    await removeData("token");
   };
 
   // Load stored user data and token on app start
   useEffect(() => {
     const fetchUserData = async () => {
-      const storedUser = await getData('loggedIn');
-      const storedToken = await getData('token');
+      const storedUser = await getData("loggedIn");
+      const storedToken = await getData("token");
       if (storedUser) setUser(storedUser);
       if (storedToken) setToken(storedToken);
     };

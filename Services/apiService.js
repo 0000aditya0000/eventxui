@@ -1,69 +1,67 @@
-const BASE_URL = 'https://eventxbackendlatest.onrender.com';
+const BASE_URL = "https://eventxbackendlatest.onrender.com";
 
 const apiService = {
-  get: async (endpoint,token) => {
+  get: async (endpoint, token) => {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error( errorData.message );
+      throw new Error(errorData.message);
     }
     return response.json();
-    
   },
 
   post: async (endpoint, data, token) => {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
     if (!response.ok) {
-      debugger
       const errorData = await response.json();
-      throw new Error( errorData.message );
+      throw new Error(errorData.message);
     }
     return response.json();
   },
 
   patch: async (endpoint, data, token) => {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error( errorData.message );
+      throw new Error(errorData.message);
     }
     return response.json();
   },
 
   delete: async (endpoint, token) => {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error( errorData.message );
+      throw new Error(errorData.message);
     }
     return response.json();
-  }
+  },
 };
 
 export default apiService;

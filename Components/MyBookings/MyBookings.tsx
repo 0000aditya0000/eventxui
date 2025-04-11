@@ -46,7 +46,7 @@ function MyBookings({ navigation, route }) {
         const image = event.image ? { uri: event.image } : defaultImage;
         return { ...event, schedule, image, userId };
       });
-      setEvents(trendingEvents);
+      setEvents(trendingEvents ?? []);
     } catch (error) {
       Toast.show({
         text1: "Error",
@@ -106,15 +106,16 @@ function MyBookings({ navigation, route }) {
 
   const NoBookings = () => (
     <View style={styles.noBookingsContainer}>
-      <Ionicons 
-        name="calendar-outline" 
-        size={80} 
-        color="#e25822" 
+      <Ionicons
+        name="calendar-outline"
+        size={80}
+        color="#e25822"
         style={styles.noBookingsIcon}
       />
       <Text style={styles.noBookingsTitle}>No Bookings Found</Text>
       <Text style={styles.noBookingsText}>
-        You haven't booked any events yet. Explore events and book your first one!
+        You haven't booked any events yet. Explore events and book your first
+        one!
       </Text>
     </View>
   );
@@ -129,7 +130,7 @@ function MyBookings({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      {events.length === 0 ? (
+      {!events?.length ? (
         <NoBookings />
       ) : (
         <FlatList

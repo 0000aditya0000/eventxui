@@ -19,8 +19,10 @@ import { useAuth } from "../../Context/AuthContext";
 import { Picker } from "@react-native-picker/picker";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Loader from "../Loader/Loader";
 
 function AddEvent({ navigation }) {
+  const [isLoading, setIsLoading] = useState(false);
   const [isChecked, setIsChecked] = useState(true);
   const [eventPhoto, setEventPhoto] = useState(null);
   const [title, setTitle] = useState("");
@@ -182,6 +184,7 @@ function AddEvent({ navigation }) {
       });
       return;
     } else {
+      setIsLoading(true);
       try {
         const response = await createEvent(data, token);
 
@@ -213,6 +216,8 @@ function AddEvent({ navigation }) {
           text2: error.message,
           type: "error",
         });
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -229,6 +234,7 @@ function AddEvent({ navigation }) {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.container}>
+      {(isLoading) && <Loader />}
         <View style={styles.sectionHeadingContainer}>
           <Ionicons
             name="add-circle-outline"

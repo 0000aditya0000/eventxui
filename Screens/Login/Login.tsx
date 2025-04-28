@@ -16,8 +16,8 @@ import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
 
 const LoginPage = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("pandit@gmail.com");
+  const [password, setPassword] = useState("india0192");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [loading, setLoading] = useState(false); // Loading state
